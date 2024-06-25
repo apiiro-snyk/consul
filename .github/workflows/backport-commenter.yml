@@ -50,7 +50,7 @@ jobs:
           # you are unsetting the repository variables if you want to use the inputs.
 
           # TODO(jmurret): Remove this before we merge this PR.
-          BEGIN_DATE: "2016-03-24" # "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
+          BEGIN_DATE: "2024-03-26" # "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
           VERSIONS: "1.15,1.16,1.17,1.18,1.19" #"${{ github.event.inputs.versions || vars.VERSIONS }}"
           OWNER: hashicorp
           REPO: consul
@@ -83,7 +83,7 @@ jobs:
           # NOTE: The repository variables override the inputs if they are set. If you are using the workflow_dispatch, ensure
           # you are unsetting the repository variables if you want to use the inputs.
           # TODO(jmurret): Remove this before we merge this PR.
-          BEGIN_DATE: "2016-03-24" # "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
+          BEGIN_DATE: "2024-03-26" # "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
           VERSIONS: "1.15,1.16,1.17,1.18,1.19" #"${{ github.event.inputs.versions || vars.VERSIONS }}"
           OWNER: hashicorp
           REPO: consul-enterprise
