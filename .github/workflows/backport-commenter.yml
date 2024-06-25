@@ -4,7 +4,7 @@
 name: Backport Commenter
 run-name: Validate backports and notify PRs owners
 on:
-  # Commented out the schedule bits as this is a test repo.
+  # TODO (jmurret): Re-enable before we merge this PR.
   #   schedule:
   #     - cron: "0 9 * * *"
   workflow_dispatch:
@@ -17,6 +17,10 @@ on:
         description: Begin Date to check for PRs being merged.  In the format of YYYY-MM-DD.
         required: true
         type: string
+  # TODO (jmurret): Remove this before we merge this PR.
+  push:
+    branches:
+      - jm/**
 
 env:
   GOPRIVATE: github.com/hashicorp # Required for private/internal backport-checker repo
