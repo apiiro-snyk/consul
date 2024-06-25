@@ -4,7 +4,7 @@
 name: Backport Commenter
 run-name: Validate backports and notify PRs owners
 on:
-  # TODO (jmurret): Re-enable before we merge this PR.
+  # TODO(jmurret): Re-enable before we merge this PR.
   #   schedule:
   #     - cron: "0 9 * * *"
   workflow_dispatch:
@@ -17,7 +17,7 @@ on:
         description: Begin Date to check for PRs being merged.  In the format of YYYY-MM-DD.
         required: true
         type: string
-  # TODO (jmurret): Remove this before we merge this PR.
+  # TODO(jmurret): Remove this before we merge this PR.
   push:
     branches:
       - jm/**
@@ -48,8 +48,10 @@ jobs:
           # and also allows us to use the repository environment variables as well if we were to run the workflow on a schedule.
           # NOTE: The repository variables override the inputs if they are set. If you are using the workflow_dispatch, ensure
           # you are unsetting the repository variables if you want to use the inputs.
-          BEGIN_DATE: "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
-          VERSIONS: "${{ github.event.inputs.versions || vars.VERSIONS }}"
+
+          # TODO(jmurret): Remove this before we merge this PR.
+          BEGIN_DATE: "2016-03-24" # "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
+          VERSIONS: "1.15,1.16,1.17,1.18,1.19" #"${{ github.event.inputs.versions || vars.VERSIONS }}"
           OWNER: hashicorp
           REPO: consul
           SYNC-REPO: consul-enterprise
@@ -80,8 +82,9 @@ jobs:
           # and also allows us to use the repository environment variables as well if we were to run the workflow on a schedule.
           # NOTE: The repository variables override the inputs if they are set. If you are using the workflow_dispatch, ensure
           # you are unsetting the repository variables if you want to use the inputs.
-          BEGIN_DATE: "${{ github.event.inputs.begin-date || env.BEGIN_DATE }}"
-          VERSIONS: "${{ github.event.inputs.versions || env.VERSIONS }}"
+          # TODO(jmurret): Remove this before we merge this PR.
+          BEGIN_DATE: "2016-03-24" # "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
+          VERSIONS: "1.15,1.16,1.17,1.18,1.19" #"${{ github.event.inputs.versions || vars.VERSIONS }}"
           OWNER: hashicorp
           REPO: consul-enterprise
 
