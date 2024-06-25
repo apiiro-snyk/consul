@@ -57,7 +57,7 @@ jobs:
           SYNC-REPO: consul-enterprise
         run: |
           backport-assistant validate \
-            --owner ${{ env.OWNER }} --repo ${{ env.REPO }} --sync-repo ${{ env.SYNC_REPO }} --versions ${{ env.VERSIONS }} \
+            --owner ${{ env.OWNER }} --repo ${{ env.REPO }} --sync-repo ${{ env.SYNC_REPO }} --versions "${{ env.VERSIONS }}" \
             --begin-date ${{ env.BEGIN_DATE }} --add-comment
   validate-backports-enterprise:
     container: hashicorpdev/backport-assistant:claire-dev
@@ -89,5 +89,5 @@ jobs:
           REPO: consul-enterprise
         run: |
           backport-assistant validate \
-            --owner ${{ env.OWNER }} --repo ${{ env.REPO }} --sync-repo ${{ env.SYNC_REPO }} --versions ${{ env.VERSIONS }} \
+            --owner ${{ env.OWNER }} --repo ${{ env.REPO }} --sync-repo ${{ env.SYNC_REPO }} --versions "${{ env.VERSIONS }}" \
             --begin-date ${{ env.BEGIN_DATE }} --add-comment
