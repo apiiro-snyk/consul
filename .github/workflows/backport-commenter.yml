@@ -1,0 +1,83 @@
+# This workflow is responsible for validating backports and commenting on backport PRs tagging PR authors to merge in their backport PRs.
+# It is scheduled to run at 9:00 AM every day and will also run when manually triggered.
+
+name: Backport Commenter
+run-name: Validate backports and notify PRs owners
+on:
+  # Commented out the schedule bits as this is a test repo.
+  #   schedule:
+  #     - cron: "0 9 * * *"
+  workflow_dispatch:
+    inputs:
+      versions:
+        description: "A comma seperated string of the x.y versions representing the backport labels to check. Example: 1.13,1.14,1.15"
+        required: true
+        type: string
+      begin-date:
+        description: Begin Date to check for PRs being merged.  In the format of YYYY-MM-DD.
+        required: true
+        type: string
+
+env:
+  GOPRIVATE: github.com/hashicorp # Required for private/internal backport-checker repo
+  GITHUB_TOKEN: ${{ secrets.ELEVATED_GITHUB_TOKEN }}
+
+jobs:
+  validate-backports-oss:
+    container: hashicorpdev/backport-assistant:claire-dev
+    runs-on: [ 'ubuntu-latest' ]
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+        with:
+          go-version-file: 'go.mod'
+      # NOTE: This step is specifically needed for ENT. It allows us to access the required private HashiCorp repos.
+      - name: Setup Git
+        run: git config --global url."https://${{ secrets.ELEVATED_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
+      - name: backport commenter
+        env:
+          # this allows us to be able to run the workflow manually and input the versions and begin date
+          # and also allows us to use the repository environment variables as well if we were to run the workflow on a schedule.
+          # NOTE: The repository variables override the inputs if they are set. If you are using the workflow_dispatch, ensure
+          # you are unsetting the repository variables if you want to use the inputs.
+          BEGIN_DATE: "${{ github.event.inputs.begin-date || vars.BEGIN_DATE }}"
+          VERSIONS: "${{ github.event.inputs.versions || vars.VERSIONS }}"
+          OWNER: hashicorp
+          REPO: consul
+          SYNC-REPO: consul-enterprise
+        run: |
+          backport-assistant validate \
+            --owner ${OWNER} --repo ${REPO} --sync-repo ${SYNC_REPO} --versions "${VERSIONS}" \
+            --begin-date "${BEGIN_DATE}" --add-comment
+  validate-backports-enterprise:
+    container: hashicorpdev/backport-assistant:claire-dev
+    runs-on: [ 'ubuntu-latest' ]
+    # needs to run serially because github search api limits to 30 req/minute.
+    # running in parallel will push it over the limit.
+    needs:
+      - validate-backports-oss
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
+        with:
+          go-version-file: 'go.mod'
+      # NOTE: This step is specifically needed for ENT. It allows us to access the required private HashiCorp repos.
+      - name: Setup Git
+        run: git config --global url."https://${{ secrets.ELEVATED_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
+      - name: backport commenter
+        env:
+          # this allows us to be able to run the workflow manually and input the versions and begin date
+          # and also allows us to use the repository environment variables as well if we were to run the workflow on a schedule.
+          # NOTE: The repository variables override the inputs if they are set. If you are using the workflow_dispatch, ensure
+          # you are unsetting the repository variables if you want to use the inputs.
+          BEGIN_DATE: "${{ github.event.inputs.begin-date || env.BEGIN_DATE }}"
+          VERSIONS: "${{ github.event.inputs.versions || env.VERSIONS }}"
+          OWNER: hashicorp
+          REPO: consul-enterprise
+
+
+        run: |
+          backport-assistant validate \
+            --owner "${OWNER}" --repo ${REPO} --versions ${VERSIONS} \
+            --begin-date ${BEGIN_DATE} --add-comment
