@@ -57,8 +57,8 @@ jobs:
           SYNC-REPO: consul-enterprise
         run: |
           backport-assistant validate \
-            --owner ${OWNER} --repo ${REPO} --sync-repo ${SYNC_REPO} --versions "${VERSIONS}" \
-            --begin-date "${BEGIN_DATE}" --add-comment
+            --owner ${{ env.OWNER }} --repo ${{ env.REPO }} --sync-repo ${{ env.SYNC_REPO }} --versions ${{ env.VERSIONS }} \
+            --begin-date ${{ env.BEGIN_DATE }} --add-comment
   validate-backports-enterprise:
     container: hashicorpdev/backport-assistant:claire-dev
     runs-on: [ 'ubuntu-latest' ]
@@ -87,9 +87,7 @@ jobs:
           VERSIONS: "1.15,1.16,1.17,1.18,1.19" #"${{ github.event.inputs.versions || vars.VERSIONS }}"
           OWNER: hashicorp
           REPO: consul-enterprise
-
-
         run: |
           backport-assistant validate \
-            --owner "${OWNER}" --repo ${REPO} --versions ${VERSIONS} \
-            --begin-date ${BEGIN_DATE} --add-comment
+            --owner ${{ env.OWNER }} --repo ${{ env.REPO }} --sync-repo ${{ env.SYNC_REPO }} --versions ${{ env.VERSIONS }} \
+            --begin-date ${{ env.BEGIN_DATE }} --add-comment
