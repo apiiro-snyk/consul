@@ -216,6 +216,6 @@
   },
   "dependencies": {
     "doctoc": "^2.0.0",
-    "ember-element-helper": "0.6.1"
+    "ember-element-helper": "0.7.1"
   }
 }
